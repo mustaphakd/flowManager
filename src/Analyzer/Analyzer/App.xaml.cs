@@ -8,6 +8,7 @@ namespace Analyzer
     {
         public App()
         {
+            SyncfusionLicenseProvider.RegisterLicense("##SyncfusionLicense##");
             InitializeComponent();
 
             MainPage = new MainPage();
