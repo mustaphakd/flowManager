@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Syncfusion.Licensing;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,7 +12,7 @@ namespace Analyzer
             SyncfusionLicenseProvider.RegisterLicense("##SyncfusionLicense##");
             InitializeComponent();
 
-            MainPage = new MainPage();
+            MainPage = new Pages.Main();
         }
 
         protected override void OnStart()

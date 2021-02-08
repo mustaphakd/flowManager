@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer.Android", "src\Ana
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer.iOS", "src\Analyzer\Analyzer.iOS\Analyzer.iOS.csproj", "{223F4140-7FB1-4DE0-A88D-61BA64542DDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer", "src\Analyzer\Analyzer\Analyzer.csproj", "{8E1F6B20-E32E-4C07-89CD-8A2F1AA4CC1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyzer", "src\Analyzer\Analyzer\Analyzer.csproj", "{8E1F6B20-E32E-4C07-89CD-8A2F1AA4CC1E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyzer.MacOS", "Analyzer.MacOS\Analyzer.MacOS.csproj", "{99E96ACE-31AA-4B34-9D68-BED7E22FD28D}"
 EndProject
