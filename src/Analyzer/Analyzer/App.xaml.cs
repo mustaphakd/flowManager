@@ -1,4 +1,4 @@
-﻿using Syncfusion.Licensing;
+﻿
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -9,7 +9,6 @@ namespace Analyzer
     {
         public App()
         {
-            SyncfusionLicenseProvider.RegisterLicense("##SyncfusionLicense##");
             InitializeComponent();
 
             MainPage = new Pages.Main();
