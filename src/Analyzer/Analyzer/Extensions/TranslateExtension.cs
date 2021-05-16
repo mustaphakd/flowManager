@@ -29,7 +29,7 @@ namespace Analyzer.Extensions
             if (translation == null)
             {
 
-#if DEBUGKK
+#if DEBUG
                 throw new ArgumentException(
                     String.Format("Key '{0}' was not found in resources '{1}' for culture '{2}'.", Text, ResourceId, ci.Name),
                     "Text");

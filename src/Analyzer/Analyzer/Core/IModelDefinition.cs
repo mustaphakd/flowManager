@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Analyzer.Core
 {
-    interface IModelDefinition
+    public interface IModelDefinition
     {
         string Id { get; set; }
     }
