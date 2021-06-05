@@ -9,8 +9,6 @@ namespace Analyzer
     public partial class App : Application
     {
         public ApplicationManager Manager { get; }
-
-        //private ApplicationManager manager;
         public App()
         {
             InitializeComponent();

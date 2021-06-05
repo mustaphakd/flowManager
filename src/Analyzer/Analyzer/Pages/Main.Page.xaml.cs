@@ -63,6 +63,17 @@ namespace Analyzer.Pages
             {
                 Detail = new NavigationPage((Page)Activator.CreateInstance(item.TargetType));
                 flyoutPage.listView.SelectedItem = null;
+
+                var behavior = this.FlyoutLayoutBehavior;
+                // Get Metrics
+                var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
+
+                // Orientation (Landscape, Portrait, Square, Unknown)
+                var orientation = mainDisplayInfo.Orientation;
+
+                if (behavior == FlyoutLayoutBehavior.Split ||
+                    (behavior == FlyoutLayoutBehavior.SplitOnLandscape && orientation == DisplayOrientation.Landscape) ||
+                    (behavior == FlyoutLayoutBehavior.SplitOnPortrait && orientation == DisplayOrientation.Portrait)) return;
                 IsPresented = false;
             }
         }

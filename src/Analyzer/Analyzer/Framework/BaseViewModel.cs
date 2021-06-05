@@ -12,25 +12,29 @@ namespace Analyzer.Framework
     {
         protected static readonly ILoggingService LoggingService;
         protected static readonly ISettingsService SettingsService;
-        //protected static readonly IXSnack XSnackService;
+        protected static readonly IAuthenticationService AuthenticationService;
+
 
         private bool isBusy;
 
         static BaseViewModel()
         {
+            //todo: validate that ApplicationManager contructor is called before this static method
             LoggingService = DependencyService.Get<ILoggingService>();
-            //XSnackService = DependencyService.Get<IXSnack>();
             SettingsService = DependencyService.Get<ISettingsService>();
+            AuthenticationService = DependencyService.Get<IAuthenticationService>();
         }
 
-
+        /// <summary>
+        /// View consuming this viewmodel should have a spinner or progressBar for this property
+        /// </summary>
         public bool IsBusy
         {
             get => isBusy;
             set => SetAndRaisePropertyChanged(ref isBusy, value);
         }
 
-        public bool Authenticated => false; // AuthenticationService.IsUserAuthenticated;
+        public bool Authenticated => AuthenticationService.IsAuthenticated;
 
         public ICommand FeatureNotAvailableCommand { get; } = new AsyncCommand(ShowFeatureNotAvailableAsync);
 
@@ -41,6 +45,7 @@ namespace Analyzer.Framework
 
         protected static async Task ShowFeatureNotAvailableAsync()
         {
+            //Todo: translate
             await Application.Current.MainPage.DisplayAlert(
                "Feature Not Available",
                 "Welcome",

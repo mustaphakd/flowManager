@@ -28,6 +28,7 @@ namespace Analyzer.Services
 
         public  Task Initialize()
         {
+            this.RegisterServicesAndProviders();
             return Task.CompletedTask;
         }
 
@@ -81,7 +82,7 @@ namespace Analyzer.Services
 
         public void PostMessage(string message)
         {
-            _messageNotificationEventManager.RaiseEvent(this, message, nameof(AuthenticationStateChanged));
+            _messageNotificationEventManager.RaiseEvent(this, message, nameof(NotificationMessageArrived));
         }
 
         public bool IsLoading => _loading;

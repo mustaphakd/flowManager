@@ -12,12 +12,20 @@ namespace Analyzer.Framework
         where T : class, IModelDefinition
     {
         private ViewStates _initialState;
-        private bool _isSelected;
         private ViewStates _state;
+        private bool _isSelected;
         private T _initialItem;
         private T _currentItem;
         private Action _refreshAction;
 
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="item">The model</param>
+        /// <param name="refreshReference">an action to invoke on the calling container/parent once some changes occurs</param>
+        /// <param name="state">Initial state</param>
+        /// <param name="externalCallRequiredBeforeStateUpdate"></param>
         public ActionableBaseViewModel(T item, Action refreshReference, ViewStates state = ViewStates.Viewing, bool externalCallRequiredBeforeStateUpdate = false)
         {
             // serialize and then deserialize into initial item.   for cancel all operation
@@ -108,7 +116,7 @@ namespace Analyzer.Framework
             {
 
                 var dialogDeleteService = Xamarin.Forms.DependencyService.Get<IDialogService>();
-                await dialogDeleteService.AlertInfo("Error", "DeleteRequirement", String.Join(",", canDeleteResult));
+                await dialogDeleteService.AlertInfo("Error", "DeleteRequirement", String.Join(",", canDeleteResult)); //todo: translate
                 return;
             }
 
@@ -151,6 +159,7 @@ namespace Analyzer.Framework
             this.State = ViewStatesHelper.MoveToState(this.State, ViewStates.Saving);
             var permanentlySaved = this.OnSaving();
 
+            /// Nice, storing changes to local storage
             var storeService = Xamarin.Forms.DependencyService.Get<IDataStoreService>();
             storeService.SaveTemporarily<T>(CurrentItem);
 
@@ -166,6 +175,7 @@ namespace Analyzer.Framework
 
         /// <summary>
         /// provide an opportunity to validate model before saving attempt.
+        /// Implementations should return error messages otherwise if null or empty array is returned then saveable is assumed
         /// </summary>
         /// <returns></returns>
         public virtual string[] CanSave() { return null; }
@@ -175,12 +185,19 @@ namespace Analyzer.Framework
         /// </summary>
         /// <returns></returns>
         public virtual bool OnSaving() { return false; }
+
+
+        /// <summary>
+        /// provide an opportunity to validate model before delete attempt.
+        /// Implementations should return error messages otherwise if null or empty array is returned then deletable is assumed
+        /// </summary>
+        /// <returns></returns>
         public virtual string[] CanDelete() { return null; }
 
 
         public ICommand SelectCommand => new AsyncCommand(this.SelectAsync);
 
-        private Task SelectAsync(Object argument)
+        protected virtual Task SelectAsync(Object argument)
         {
             return Task.CompletedTask;
         }
@@ -192,7 +209,8 @@ namespace Analyzer.Framework
 
         /// <summary
         /// detects whether the viewmodel model should not be ignored when saving to disk. e.g the viewmodel represents model that happens to be created and then
-        /// deleted. or an item was just viewed
+        /// deleted. or an item was just viewed.
+        /// Basically, a viewmodel's model should be discarded and not sent as part of payload to backend.
         /// </summary>
         /// <returns></returns>
         public bool IsAccountableForBackendFlight()

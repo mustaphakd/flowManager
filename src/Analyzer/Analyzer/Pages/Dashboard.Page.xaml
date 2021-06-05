@@ -2,13 +2,214 @@
 <ContentPage
     x:Class="Analyzer.Pages.Dashboard"
     xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:bvr="clr-namespace:Analyzer.Behaviors">
     <ContentPage.Content>
-        <StackLayout>
-            <Label
-                HorizontalOptions="CenterAndExpand"
-                Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" />
-        </StackLayout>
+        <ScrollView BackgroundColor="Orange" Orientation="Vertical">
+            <FlexLayout BackgroundColor="Purple" Direction="Column">
+                <FlexLayout
+                    bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                    BackgroundColor="LightSeaGreen"
+                    Direction="Row"
+                    WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                    Wrap="Wrap">
+                    <Label
+                        Padding="2"
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name."
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center" />
+                    <Entry
+                        FlexLayout.Grow="2"
+                        Placeholder="Username"
+                        PlaceholderColor="Olive" />
+                    <Label
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name." />
+                </FlexLayout>
+                <FlexLayout
+                    bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                    BackgroundColor="LightSeaGreen"
+                    Direction="Row"
+                    WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                    Wrap="Wrap">
+                    <Label
+                        Padding="2"
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name."
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center" />
+                    <Entry
+                        FlexLayout.Grow="2"
+                        Placeholder="Username"
+                        PlaceholderColor="Olive" />
+                    <Label
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name." />
+                </FlexLayout>
+                <FlexLayout
+                    bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                    BackgroundColor="LightSeaGreen"
+                    Direction="Row"
+                    WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                    Wrap="Wrap">
+                    <Label
+                        Padding="2"
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name."
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center" />
+                    <Entry
+                        FlexLayout.Grow="2"
+                        Placeholder="Username"
+                        PlaceholderColor="Olive" />
+                    <Label
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name." />
+                </FlexLayout>
+                <FlexLayout
+                    bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                    BackgroundColor="LightSeaGreen"
+                    Direction="Row"
+                    WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                    Wrap="Wrap">
+                    <Label
+                        Padding="2"
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name."
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center" />
+                    <Entry
+                        FlexLayout.Grow="2"
+                        Placeholder="Username"
+                        PlaceholderColor="Olive" />
+                    <Label
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name." />
+                </FlexLayout>
+                <FlexLayout
+                    bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                    BackgroundColor="LightSeaGreen"
+                    Direction="Row"
+                    WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                    Wrap="Wrap">
+                    <Label
+                        Padding="2"
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name."
+                        VerticalOptions="FillAndExpand"
+                        VerticalTextAlignment="Center" />
+                    <Entry
+                        FlexLayout.Grow="2"
+                        Placeholder="Username"
+                        PlaceholderColor="Olive" />
+                    <Label
+                        BackgroundColor="Maroon"
+                        FlexLayout.Grow="1"
+                        Text=" daf asa aseol Enter Name." />
+                </FlexLayout>
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+                <Label Text="This monkey is laid back and relaxed, and likes to watch the world go by." />
+                <Label Text="  &#x2022; Doesn't make a lot of noise" />
+                <Label Text="  &#x2022; Often smiles mysteriously" />
+                <Label Text="  &#x2022; Sleeps sitting up" />
+
+            </FlexLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

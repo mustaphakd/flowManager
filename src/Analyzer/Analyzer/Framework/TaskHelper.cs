@@ -41,6 +41,12 @@
             return this;
         }
 
+        /// <summary>
+        /// When invoking remote services, wrap them into this call
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="customErrorHandler"></param>
+        /// <returns></returns>
         public async Task<Status> TryWithErrorHandlingAsync(
             Task task,
             Func<Exception, Task<bool>> customErrorHandler = null)
@@ -56,6 +62,13 @@
             return Error();
         }
 
+        /// <summary>
+        /// When invoking remote services, wrap them into this call.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task"></param>
+        /// <param name="customErrorHandler"></param>
+        /// <returns></returns>
         public async Task<Result<T>> TryWithErrorHandlingAsync<T>(
             Task<T> task,
             Func<Exception, Task<bool>> customErrorHandler = null)
