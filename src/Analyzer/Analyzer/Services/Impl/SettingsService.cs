@@ -10,6 +10,7 @@ namespace Analyzer.Services.Impl
     public class SettingsService : ISettingsService
     {
         private string key => "wor_settings_00BABA54-91AD-402F-82F1-A0FF7345AE31"; //DefaultSettings.SettingsStorage;
+        const string DEFAULTSTORAGE = "Analyzer.Data.settings.json";
         public SettingsModel GetSettings()
         {
             SettingsModel model = null ; //= new SettingsModel { ServerEndpoint = DefaultSettings.RootApiUrl };
@@ -80,7 +81,7 @@ namespace Analyzer.Services.Impl
 
         private SettingsModel InitializeSettingModel()
         {
-            var defaultSettingsModel = EmbeddedResourceHelper.PopulateData<SettingsModel>("Analyzer.Data.settings.json");
+            var defaultSettingsModel = EmbeddedResourceHelper.PopulateData<SettingsModel>(DEFAULTSTORAGE);
             var model = new SettingsModel
             {
                 DefaultConnectionString = "data.bin",

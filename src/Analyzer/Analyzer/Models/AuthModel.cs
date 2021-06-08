@@ -1,4 +1,5 @@
 ﻿using Analyzer.Core;
+using System;
 
 namespace Analyzer
 {
@@ -9,9 +10,12 @@ namespace Analyzer
             Check.NotNull(token, nameof(token));
             Token = token;
             Scheme = scheme;
+            LastTimeUsage = DateTime.Now;
         }
 
         public string Token { get; }
         public string Scheme { get; }
+
+        public DateTime LastTimeUsage { get; set; }
     }
 }

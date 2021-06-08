@@ -292,13 +292,18 @@ namespace Analyzer.Framework.Files
         /// <returns></returns>
         public async static Task WriteLocalSetting(string key, string option)
         {
-            var path = ApplicationPath();
-            if (!CheckFileExists(path + Path.DirectorySeparatorChar + SettingsName + ".json"))
+            var path = ApplicationPath() + Path.DirectorySeparatorChar;
+            var fileName = SettingsName + ".json";
+            var fullPath = path + fileName;
+
+            if (!CheckFileExists(fullPath))
             {
-                await WriteLocalFileTextAsync("{}", SettingsName + ".json", path + Path.DirectorySeparatorChar);
+                await WriteLocalFileTextAsync("{}", fileName, path);
             }
-            string json = await ReadLocalFileTextAsync(path + Path.DirectorySeparatorChar + SettingsName + ".json");
+
+            string json = await ReadLocalFileTextAsync(fullPath);
             Dictionary<string, string> settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+
             if (settings.ContainsKey(key))
             {
                 string serializate = option;
@@ -306,7 +311,8 @@ namespace Analyzer.Framework.Files
             }
             else
                 settings.Add(key, option.ToString());
-            await WriteLocalFileTextAsync(System.Text.Json.JsonSerializer.Serialize(settings), SettingsName + ".json", path + Path.DirectorySeparatorChar);
+
+            await WriteLocalFileTextAsync(System.Text.Json.JsonSerializer.Serialize(settings), fileName, path);
         }
         /// <summary>
         /// Write a local setting of type T (T must be serializable)
@@ -317,10 +323,13 @@ namespace Analyzer.Framework.Files
         /// <returns></returns>
         public async static Task WriteLocalSetting<T>(string key, T option)
         {
-            var path = ApplicationPath();
-            if (!CheckFileExists(path + Path.DirectorySeparatorChar + SettingsName + ".json"))
+            var path = ApplicationPath() + Path.DirectorySeparatorChar;
+            var fileName = SettingsName + ".json";
+            var fullPath = path + fileName;
+
+            if (!CheckFileExists(fullPath))
             {
-                await WriteLocalFileTextAsync("{}", SettingsName + ".json", path + Path.DirectorySeparatorChar);
+                await WriteLocalFileTextAsync("{}", fileName, path );
             }
 
 
@@ -329,7 +338,7 @@ namespace Analyzer.Framework.Files
 
             try
             {
-                json = await ReadLocalFileTextAsync(path + Path.DirectorySeparatorChar + SettingsName + ".json");
+                json = await ReadLocalFileTextAsync(fullPath);
                 settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json);
 
             }
@@ -339,7 +348,7 @@ namespace Analyzer.Framework.Files
             }
 
 
-            string serializate = SerializeObject(option);
+            string serializate = option == null ? null : SerializeObject(option);
 
             if (settings.ContainsKey(key))
             {
@@ -347,7 +356,8 @@ namespace Analyzer.Framework.Files
             }
             else
                 settings.Add(key, serializate);
-            await WriteLocalFileTextAsync(System.Text.Json.JsonSerializer.Serialize(settings), SettingsName + ".json", path + Path.DirectorySeparatorChar);
+
+            await WriteLocalFileTextAsync(System.Text.Json.JsonSerializer.Serialize(settings), fileName, path);
         }
         /// <summary>
         /// Check if a local setting exists

@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Attributes\" />
+    <Folder Include="Data\" />
     <Folder Include="Views\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>

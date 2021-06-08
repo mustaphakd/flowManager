@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<FlyoutPage  xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Analyzer.Pages.Main"
-             xmlns:pages="clr-namespace:Analyzer.Pages">
+<FlyoutPage
+    x:Class="Analyzer.Pages.Main"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:Analyzer.Pages">
     <FlyoutPage.Flyout>
         <pages:Menu x:Name="flyoutPage" />
     </FlyoutPage.Flyout>
