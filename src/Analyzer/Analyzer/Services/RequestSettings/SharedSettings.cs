@@ -27,24 +27,25 @@ namespace Analyzer.Services.RequestSettings
             }
         }
 
-        public static Task Execute<T1>(Func<T1, Task> handler, string successMessage = "Succeeded making remote API call", string failureMessage = "Failed making remote API call")
+        public static Task<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<TResult>> Execute<T1, TResult>(Func<T1, Task<TResult>> handler, string successMessage = "Succeeded making remote API call", string failureMessage = "Failed making remote API call")
         {
             // get singleInstance of httpCLient via injected facory
             // when constructing httpClient pass in list of MessageProcessingHandler
             // -- auth, logging, RetryHandler, stopWatchHandler etc...
             //pass httpClient to .For<T1> method
-            var taskSource = new TaskCompletionSource<object>(); // todo: does accessing its task property obj raise an access violation ??
+            var taskSource = new TaskCompletionSource<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<TResult>>(); // todo: does accessing its task property obj raise an access violation ??
             var instance = Worosoft.Xamarin.HttpClientExtensions.Builder.Build<T1>(RefitSettings);
 
 
-            QueueManager.Add(Task.Run(() =>
+            QueueManager.Add<TResult>(Task.Run(async () =>
             {
-                handler(instance).ConfigureAwait(false);
+                var part = await handler(instance).ConfigureAwait(false);
+                return part;
 
             }), successMessage, failureMessage, taskSource);
 
-            Task result = taskSource.Task;    //handler(concrete); // move task construction to QueueManager Add method and return task from that method.
-            return result;
+            Task<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<TResult>> result = taskSource.Task;    //handler(concrete); // move task construction to QueueManager Add method and return task from that method.
+            return result; // here return task of operationResult
         }
 
     }

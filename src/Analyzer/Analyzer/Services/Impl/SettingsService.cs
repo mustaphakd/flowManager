@@ -73,10 +73,9 @@ namespace Analyzer.Services.Impl
             modelSetter(model);
         }
 
-        private async void registerSettingsModel(SettingsModel model)
+        private void registerSettingsModel(SettingsModel model)
         {
-            await FileSystemManager.WriteLocalSetting<SettingsModel>(this.key, model);
-            await this.SetSettings(model);
+            this.SetSettings(model).ConfigureAwait(true).GetAwaiter().GetResult();
         }
 
         private SettingsModel InitializeSettingModel()
@@ -96,7 +95,7 @@ namespace Analyzer.Services.Impl
         {
             Core.CoreHelpers.ValidateDefined(model, $"{nameof(model)} is required");
             Application.Current.Properties[key] = model;
-            await Application.Current.SavePropertiesAsync();
+            var task = Application.Current.SavePropertiesAsync();
             await FileSystemManager.WriteLocalSetting<SettingsModel>(this.key, model);
         }
     }

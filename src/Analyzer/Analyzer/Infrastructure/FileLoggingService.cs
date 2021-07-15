@@ -30,20 +30,19 @@ namespace Analyzer.Infrastructure
 
         public void Debug(string message)
         {
-            System.Diagnostics.Debug.WriteLine(message); // check thread
-            FileSystemManager.WriteLocalFileTextAsync(message, _logFile, _folderPath).GetAwaiter().GetResult();
+            var newMessage = $"${_name}--{message}";
+            System.Diagnostics.Debug.WriteLine(newMessage); // check thread
+            FileSystemManager.WriteLocalFileTextAsync(newMessage, _logFile, _folderPath).GetAwaiter().GetResult();
         }
 
         public void Warning(string message)
         {
-            Debug($"# {nameof(Warning)}");
-            Debug(message);
+            Debug($"# {nameof(Warning)}: {message}");
         }
 
         public void Error(Exception exception)
         {
-            Debug($"# {nameof(Error)}");
-            Debug(exception.ToString());
+            Debug($"# {nameof(Error)}: {exception.ToString()}");
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -59,7 +58,7 @@ namespace Analyzer.Infrastructure
             string text = formatter(state, exception);
             if (!string.IsNullOrEmpty(text))
             {
-                text = $"${_name}-{logLevel}: {text}";
+                text = $"{logLevel}: {text}";
                 if (exception != null)
                 {
                     text = text + Environment.NewLine + Environment.NewLine + exception?.ToString();

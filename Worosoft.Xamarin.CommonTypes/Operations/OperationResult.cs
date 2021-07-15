@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Analyzer.Operations
+namespace Worosoft.Xamarin.CommonTypes.Operations
 {
     /// <summary>
     /// To Set failure, passin error message when constructing the object.

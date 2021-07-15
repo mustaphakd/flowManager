@@ -8,7 +8,7 @@ using Xamarin.Forms;
 
 namespace Worosoft.Xamarin.HttpClientExtensions
 {
-    class AllInclusiveFactory : IHttpClientFactory
+    public class AllInclusiveFactory : IHttpClientFactory
     {
         const string defaultClientName = "wrsft_default_client_@";
         static AllInclusiveFactory()

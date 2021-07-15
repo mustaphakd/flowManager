@@ -61,7 +61,7 @@ namespace Analyzer.Framework
                 .TryWithErrorHandlingAsync(operation, onError);
 
         protected async Task<Result<T>> TryExecuteWithLoadingIndicatorsAsync<T>(
-            Task<T> operation,
+            Func<Task<T>> operation,
             Func<Exception, Task<bool>> onError = null) =>
             await TaskHelper.Create()
                 .WhenStarting(() => IsBusy = true)

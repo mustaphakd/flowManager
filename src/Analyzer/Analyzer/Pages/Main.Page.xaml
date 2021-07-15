@@ -7,11 +7,11 @@
     <FlyoutPage.Flyout>
         <pages:Menu x:Name="flyoutPage" />
     </FlyoutPage.Flyout>
-    <FlyoutPage.Detail>
+    <!--<FlyoutPage.Detail>
         <NavigationPage>
             <x:Arguments>
                 <pages:Dashboard />
             </x:Arguments>
         </NavigationPage>
-    </FlyoutPage.Detail>
+    </FlyoutPage.Detail>-->
 </FlyoutPage>

@@ -1,12 +1,12 @@
 ﻿//using Data.Impl;
 using Analyzer.Core;
 using Analyzer.Infrastructure;
-using Analyzer.Operations;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Worosoft.Xamarin.CommonTypes.Operations;
 
 namespace Analyzer.Services.Impl
 {

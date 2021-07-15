@@ -11,6 +11,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\settings.json" />
+    <None Remove="Resources\Fonts\FontAwesome5Regular400.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Data\settings.json" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome5Regular400.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="akavache" Version="7.2.1" />
     <PackageReference Include="CSharp.OperationResult" Version="0.1.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
@@ -21,14 +31,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Attributes\" />
-    <Folder Include="Data\" />
-    <Folder Include="Views\" />
-    <Folder Include="ViewModels\" />
+    <ProjectReference Include="..\..\..\Worosoft.Xamarin.CommonTypes\Worosoft.Xamarin.CommonTypes.csproj" />
+    <ProjectReference Include="..\..\..\Worosoft.Xamarin.HttpClientExtenstions\Worosoft.Xamarin.HttpClientExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Worosoft.Xamarin.HttpClientExtenstions\Worosoft.Xamarin.HttpClientExtensions.csproj" />
+    <Compile Update="Pages\UsersPage.xaml.cs">
+      <DependentUpon>UsersPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\AppResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +54,13 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Pages\Menu.Page.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\AppResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\LoginView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

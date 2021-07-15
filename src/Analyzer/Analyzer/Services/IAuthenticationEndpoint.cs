@@ -10,11 +10,11 @@ namespace Analyzer.Services
     {
         //[RefitRetry]
         [Post("")] //RestEndpoints.Login
-        Task<AuthModel> LoginAsync(UserLogin credentials, CancellationToken cancellationToken = default(CancellationToken));
+        Task<AuthModel> LoginAsync(IUserLogin credentials, CancellationToken cancellationToken = default(CancellationToken));
 
         //[RefitRetry]
         [Post("")] //RestEndpoints.Registation
-        Task RegisterNewUserAsync(UserRegistration details, CancellationToken cancellationToken = default(CancellationToken));
+        Task RegisterNewUserAsync(IUserRegistration details, CancellationToken cancellationToken = default(CancellationToken));
 
         [Post("")] //<System.Net.HttpStatusCode> //RestEndpoints.Logout
         Task Logout(CancellationToken cancellationToken = default(CancellationToken));

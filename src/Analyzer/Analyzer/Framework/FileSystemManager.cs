@@ -367,11 +367,15 @@ namespace Analyzer.Framework.Files
         public async static Task<bool> CheckLocalSettingExists(string key)
         {
             var path = ApplicationPath();
-            if (!CheckFileExists(Path.Combine(path, SettingsName + ".json")))
+            var fileName = SettingsName + ".json";
+            var fullPath = Path.Combine(path, fileName);
+
+            if (!CheckFileExists(fullPath))
             {
-                await WriteLocalFileTextAsync("{}", SettingsName + ".json", path + Path.DirectorySeparatorChar);
+                await WriteLocalFileTextAsync("{}", fileName, path + Path.DirectorySeparatorChar);
             }
-            string json = await ReadLocalFileTextAsync(Path.Combine(ApplicationPath(), SettingsName + ".json"));
+
+            string json = await ReadLocalFileTextAsync(fullPath);
             Dictionary<string, string> settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json);
             return settings.ContainsKey(key);
         }
@@ -381,17 +385,26 @@ namespace Analyzer.Framework.Files
         /// <typeparam name="T">model to pull from settings storage</typeparam>
         /// <param name="key">Key under which the model is stored</param>
         /// <returns></returns>
-        public async static Task<T> ReadLocalSettingAsync<T>(string key)
+        public async static Task<T> ReadLocalSettingAsync<T>(string key, bool throwExeption = true, T defaultValue = default(T))
         {
-            if (!CheckFileExists(Path.Combine(ApplicationPath(), SettingsName + ".json")))
+            var path = Path.Combine(ApplicationPath(), SettingsName + ".json");
+
+            if (!CheckFileExists(path) && throwExeption == true)
             {
                 throw new FileNotFoundException();
             }
-            var path = Path.Combine(ApplicationPath(), SettingsName + ".json");
+
             string json = await ReadLocalFileTextAsync(path);
             Dictionary<string, string> settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(json);
-            var source = settings[key];
-            var deserialized = DeserializeObject<T>(source);
+
+            var deserialized = defaultValue;
+
+            if (settings.ContainsKey(key))
+            {
+                var source = settings[key];
+                deserialized = DeserializeObject<T>(source);
+            }
+
             return deserialized;
         }
 

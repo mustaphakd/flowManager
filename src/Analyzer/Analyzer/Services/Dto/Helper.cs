@@ -1,7 +1,7 @@
 ﻿using Analyzer.Framework;
-using Analyzer.Operations;
 using System;
 using System.Collections.Generic;
+using Worosoft.Xamarin.CommonTypes.Operations;
 
 namespace Analyzer.Services.Dto
 {

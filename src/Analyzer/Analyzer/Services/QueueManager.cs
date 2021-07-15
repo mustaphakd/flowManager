@@ -10,12 +10,12 @@ namespace Analyzer.Services
         private int monitoring_ = 0;
         private static QueueManager manager_;
         private object syncObj = new object();
-        private List<QueueJob> pendingTasks;
+        private List<IQueueJob> pendingTasks;
         private WeakReference<Task> monitoringTask_;
 
         private QueueManager()
         {
-            pendingTasks = new List<QueueJob>();
+            pendingTasks = new List<IQueueJob>();
         }
 
         static QueueManager()
@@ -23,11 +23,10 @@ namespace Analyzer.Services
             manager_ = manager_ ?? new QueueManager();
         }
 
-        internal static void Add<T>(Task task, string successMessage, string failureMessage, TaskCompletionSource<T> source, Action handler = null)
+        internal static void Add<T>(Task<T> task, string successMessage, string failureMessage, TaskCompletionSource<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<T>> source, Action handler = null)
         {
-            //todo: test to make source is not corrupt and houses correct data and does not throw exception
             manager_.QueueJob(
-                new QueueJob(task, successMessage, failureMessage, (TaskCompletionSource<object>)(object)source, handler));
+                new QueueJob<T>(task, successMessage, failureMessage, source, handler));
 
             manager_.StartMonitoring();
         }
@@ -55,13 +54,14 @@ namespace Analyzer.Services
 
                         pendingTasks.RemoveAt(i);
 
-                        if (job.Task.IsCompleted)
+                        if (job.Task.IsCompleted && job.Task.IsFaulted == false)
                             this.OnTaskComplete(job);
                         else
                             this.OnTaskFailure(job);
                     }
 
                     await Task.Delay(700);
+                    System.Threading.Thread.Sleep(2000);
                 }
 
                 System.Threading.Interlocked.Exchange(ref manager_.monitoring_, 0);
@@ -69,31 +69,31 @@ namespace Analyzer.Services
 
         }
 
-        private void OnTaskComplete(QueueJob job)
+        private void OnTaskComplete(IQueueJob job)
         {
             ((Analyzer.App)App.Current).Manager.PostMessage(job.SuccessMessage);
-            job.TaskCompletion.SetResult(new object());
+            job.SetComplete();
 
             if(job.Handler != null)
             {
                 job.Handler();
             }
         }
-        private void OnTaskFailure(QueueJob job)
+        private void OnTaskFailure(IQueueJob job)
         {
             ((Analyzer.App)App.Current).Manager.PostMessage(job.FailureMessage);
 
             if(job.Task.IsCanceled == true)
             {
-                job.TaskCompletion.SetCanceled();
+                job.SetCancel();
             }
             else
             {
-                job.TaskCompletion.SetException(job.Task.Exception);
+                job.SetException();
             }
         }
 
-        private void QueueJob(QueueJob queueJob)
+        private void QueueJob<T>(QueueJob<T> queueJob)
         {
             lock(syncObj)
             {
@@ -102,13 +102,26 @@ namespace Analyzer.Services
         }
     }
 
-    public class QueueJob
+    public interface IQueueJob
+    {
+        Task Task { get; }
+        string SuccessMessage { get; }
+        string FailureMessage { get; }
+        object TaskCompletion { get; }
+        Action Handler { get; }
+
+        void SetComplete();
+        void SetCancel();
+        void SetException();
+    }
+
+    public class QueueJob<T> : IQueueJob
     {
         public QueueJob(
-            Task task,
+            Task<T> task,
             string successMessage,
             string failureMessage,
-            TaskCompletionSource<object> taskCompletion,
+            TaskCompletionSource<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<T>> taskCompletion,
             Action handler)
         {
             Task = task;
@@ -118,10 +131,29 @@ namespace Analyzer.Services
             Handler = handler;
         }
 
-        public Task Task { get; }
+        public Task<T> Task { get; }
         public string SuccessMessage { get; }
         public string FailureMessage { get; }
-        public TaskCompletionSource<object> TaskCompletion { get; }
+        public TaskCompletionSource<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<T>> TaskCompletion { get; }
         public Action Handler { get; }
+
+        Task IQueueJob.Task => Task;
+
+        object IQueueJob.TaskCompletion => TaskCompletion;
+
+        public void SetCancel()
+        {
+            TaskCompletion.SetCanceled();
+        }
+
+        public void SetComplete()
+        {
+            TaskCompletion.SetResult(Task.Result);
+        }
+
+        public void SetException()
+        {
+            TaskCompletion.SetException(Task.Exception);
+        }
     }
 }

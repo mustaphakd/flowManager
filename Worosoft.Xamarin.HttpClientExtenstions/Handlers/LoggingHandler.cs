@@ -7,7 +7,7 @@ namespace Worosoft.Xamarin.HttpClientExtensions.Handlers
 {
     class LoggingHandler : MessageProcessingHandler
     {
-        public LoggingHandler(ILoggerFactory factory)
+        public LoggingHandler(ILoggerFactory factory) : base(new HttpClientHandler())
         {
             if (factory == null) throw new ArgumentNullException();
             Logger = factory.CreateLogger(nameof(LoggingHandler));

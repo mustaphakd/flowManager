@@ -52,7 +52,7 @@
             Func<Exception, Task<bool>> customErrorHandler = null)
         {
             var taskWrapper = new Func<Task<object>>(() => WrapTaskAsync(task));
-            var result = await TryWithErrorHandlingAsync(taskWrapper(), customErrorHandler);
+            var result = await TryWithErrorHandlingAsync(taskWrapper, customErrorHandler);
 
             if (result)
             {
@@ -70,7 +70,7 @@
         /// <param name="customErrorHandler"></param>
         /// <returns></returns>
         public async Task<Result<T>> TryWithErrorHandlingAsync<T>(
-            Task<T> task,
+            Func<Task<T>> taskOperation,
             Func<Exception, Task<bool>> customErrorHandler = null)
         {
             whenStarting?.Invoke();
@@ -83,6 +83,7 @@
 
             try
             {
+                var task = taskOperation();
                 T actualResult = await task;
                 return Ok(actualResult);
             }
@@ -92,10 +93,8 @@
 
                 if (customErrorHandler == null || !await customErrorHandler?.Invoke(exception))
                 {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Unexpected Error", //Resources.Alert_Title_UnexpectedError,
-                        "Internet Error", //Resources.Alert_Message_InternetError,
-                        "OK..."); //Resources.Alert_OK_OKEllipsis);
+                    var dialogService = DependencyService.Get<Services.Impl.DialogService>();
+                    await dialogService.AlertInfo("Alert_Title_UnexpectedError", "Alert_Message_InternetError");
                 }
             }
             catch (TaskCanceledException exception)
@@ -108,10 +107,8 @@
 
                 if (customErrorHandler == null || !await customErrorHandler?.Invoke(exception))
                 {
-                    await Application.Current.MainPage.DisplayAlert(
-                        "Unexpected Error", //Resources.Alert_Title_UnexpectedError,
-                        "Internet Error", //Resources.Alert_Message_InternetError,
-                        "OK..."); //Resources.Alert_OK_OKEllipsis);
+                    var dialogService = DependencyService.Get<Services.Impl.DialogService>();
+                    await dialogService.AlertInfo("Alert_Title_UnexpectedError", "Alert_Message_CorruptDataFromRemoteServer");
                 }
             }
             finally

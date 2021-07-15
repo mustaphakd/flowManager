@@ -1,9 +1,7 @@
-﻿using Worosoft.Xamarin.HttpClientExtensions.Attributes;
-using System;
-using System.Linq;
+﻿using System;
 using System.Reflection;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Worosoft.Xamarin.HttpClientExtensions.Attributes;
 
 namespace Worosoft.Xamarin.HttpClientExtensions.Extensions
 {
@@ -13,6 +11,17 @@ namespace Worosoft.Xamarin.HttpClientExtensions.Extensions
         public static ApiDefinitionAttribute GetAttribute<T>()
         {
             return typeof(T).GetTypeInfo().GetCustomAttribute<ApiDefinitionAttribute>();
+        }
+
+        public static Refit.HttpMethodAttribute GetHttpMethodAttribute<T>()
+        {
+            return typeof(T).GetTypeInfo().GetCustomAttribute<Refit.HttpMethodAttribute>();
+        }
+        public static string GetEndpointPath<T>()
+        {
+            var attribute = GetHttpMethodAttribute<T>();
+
+            return attribute == null ? string.Empty : attribute.Path;
         }
 
         public static int GetRetryCount<T>()
@@ -27,12 +36,10 @@ namespace Worosoft.Xamarin.HttpClientExtensions.Extensions
             return GetAttribute<T>()?.HttpMessageHandler;
         }
 
-
         public static Func<Task<string>> GetRemoteUrlProvider<T>()
         {
             return GetAttribute<T>()?.RemoteUrlProvider;
         }
-
 
         public static TimeSpan GetTimeout<T>()
         {

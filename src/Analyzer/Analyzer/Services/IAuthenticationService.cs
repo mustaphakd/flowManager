@@ -1,25 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Analyzer.Services
 {
     public interface IAuthenticationService
     {
 
-        Task<Operations.OperationResult<bool>> LoginAsync(UserLogin credentials);
+        Task<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<bool>> LoginAsync(IUserLogin credentials);
 
-        Task<Operations.OperationResult<bool>> RegisterNewUserAsync(UserRegistration details);
+        Task<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<bool>> RegisterNewUserAsync(IUserRegistration details);
 
-        Task<Operations.OperationResult<bool>> Logout();
+        Task<Worosoft.Xamarin.CommonTypes.Operations.OperationResult<bool>> Logout();
 
         bool IsAuthenticated { get; }
 
         string UserName { get; }
-    }
 
-    public interface UserLogin {
-        string identifier { get; set; }
-        string Password { get; }
-        string Email { get; }
+        event EventHandler<AuthModel> Authenticated;
     }
-    public interface UserRegistration { string identifier { get; set; } string Email { get; } string Password { get; set; } };
 }

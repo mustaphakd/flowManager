@@ -11,13 +11,16 @@ using Xamarin.Forms;
 using System.Security.Cryptography;
 using System.Reactive.Linq;
 using Analyzer.Services.RequestSettings;
-using Analyzer.Operations;
+using Worosoft.Xamarin.CommonTypes.Operations;
 
 namespace Analyzer.Services.Impl
 {
     public class AuthenticationService : IAuthenticationService
     {
         private ILoggingService logger_;
+
+        public event EventHandler<AuthModel> Authenticated;
+
         public AuthenticationService()
         {
             var logger = DependencyService.Get<ILoggingService>();
@@ -31,91 +34,91 @@ namespace Analyzer.Services.Impl
 
         public string UserName { get; set; } = "XXXX";
 
-        public Task<OperationResult<bool>> LoginAsync(UserLogin credentials)
+        public Task<OperationResult<bool>> LoginAsync(IUserLogin credentials)
         {
-            throw new NotImplementedException();
+            return PerformLoginAsync(credentials);
         }
 
-        public Task<OperationResult<bool>> RegisterNewUserAsync(UserRegistration details)
+        public Task<OperationResult<bool>> RegisterNewUserAsync(IUserRegistration details)
         {
-            throw new NotImplementedException();
+            //todo: uncomment codeblock below.
+            return new Task<OperationResult<bool>>(() => true);
         }
 
         public Task<OperationResult<bool>> Logout()
         {
             throw new NotImplementedException();
         }
-        /*
 
-       public async Task<Operations.OperationResult<bool>> LoginAsync(UserLogin credentials)
+
+       public async Task<OperationResult<bool>> PerformLoginAsync(IUserLogin credentials)
        {
-           Check.NotNull(credentials, nameof(credentials));
-           AuthenticatedUser authenticatedUser = null;
+            Check.NotNull(credentials, nameof(credentials));
+            IAuthenticatedUser authenticatedUser = null;
 
-           if(string.IsNullOrEmpty(credentials.Email) || string.IsNullOrEmpty(credentials.Password))
-           {
-               return "error";
-           }
+            if(string.IsNullOrEmpty(credentials.Email) || string.IsNullOrEmpty(credentials.Password))
+            {
+                return "error";
+            }
 
-           var settingsService = DependencyService.Get<ISettingsService>();
-           var isDebugMode = settingsService.GetSettings().EnableDebugMode;
+            var settingsService = DependencyService.Get<ISettingsService>();
+            var isDebugMode = settingsService.GetSettings().EnableDebugMode;
 
-           if(isDebugMode == true)
-           {
-               UserName = credentials.Email;
-               return true;
-           }
+            if(isDebugMode == true)
+            {
+                UserName = credentials.Email;
+                return true;
+            }
 
-           BaseApiConfiguration.ApiUri = new Uri(settingsService.GetSettings().ServerEndpoint, UriKind.Absolute);
+            Worosoft.Xamarin.HttpClientExtensions.Configuration.RemoteHost = new Uri(settingsService.GetSettings().ServerEndpoint, UriKind.Absolute).ToString();
 
-           try
-           {
-               //pull from cache
-               authenticatedUser = await BlobCache.UserAccount.GetObject<AuthenticatedUser>(CacheKeys.User_Auth);
-           }
-           catch (KeyNotFoundException)
-           {
-               logger_.LogInformation($"AuthenticationService::LoginAsync() Failed to retrieve authmodel from cache.");
-           }
+            try
+            {
+                //pull from cache
+                //authenticatedUser = await BlobCache.UserAccount.GetObject<IAuthenticatedUser>(CacheKeys.User_Auth);
+            }
+            catch (KeyNotFoundException)
+            {
+                logger_.LogInformation($"AuthenticationService::LoginAsync() Failed to retrieve authmodel from cache.");
+            }
 
-           var hasher = System.Security.Cryptography.HMACSHA1.Create();
-           var authenticatedUserPwd = authenticatedUser?.PwdHsh;
-           hasher.Key = System.Text.Encoding.Unicode.GetBytes("app_code*");
-           var pwdHshr = hasher.ComputeHash(Encoding.Unicode.GetBytes(credentials.Password));
-           var pwdHshStr = Encoding.Unicode.GetString(pwdHshr);
+            //https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.hmac.create?view=net-5.0#System_Security_Cryptography_HMAC_Create_System_String_
+            var hasher = HMACSHA1.Create("System.Security.Cryptography.HMACSHA256");
+            var authenticatedUserPwd = authenticatedUser?.PasswordHash;
+            hasher.Key = System.Text.Encoding.Unicode.GetBytes("app_code*");
+            var pwdHshr = hasher.ComputeHash(Encoding.Unicode.GetBytes(credentials.Password));
+            var pwdHshStr = Encoding.Unicode.GetString(pwdHshr);
 
-           //ok return that
-           if (authenticatedUser != null && authenticatedUser.UserName.Equals(credentials.Email) &&
-               String.Equals(pwdHshStr, authenticatedUser.PwdHsh))
-           {
-               RegisterAuthTokenForRequests( new AuthModel(authenticatedUser.AuthToken));
-               authenticatedUser.LastLogin = DateTime.Now.ToString();
-               await BlobCache.UserAccount.InsertObject<AuthenticatedUser>(CacheKeys.User_Auth, authenticatedUser);
-               return true;
-           }
+            var loginCred = new UserLogin(credentials.Email, pwdHshStr);
 
-           // using polly
-           //try to authenticate no more than 3 times
-           //onFailure notify user via pop up
-           var response = await SharedSettings.RestService.Execute<IAuthenticationEndpoint, AuthModel>(api => api.LoginAsync(credentials, default(System.Threading.CancellationToken)));
+            //ok return that
+            if (authenticatedUser != null && authenticatedUser.Identifier.Equals(credentials.Email) &&
+                String.Equals(pwdHshStr, authenticatedUser.PasswordHash))
+            {
+                RegisterAuthTokenForRequests( new AuthModel(authenticatedUser.AuthToken));
+                authenticatedUser.RefreshLoginStamp();
+                await BlobCache.UserAccount.InsertObject<IAuthenticatedUser>(CacheKeys.User_Auth, authenticatedUser);
+                var previousAuthModel = new AuthModel(authenticatedUser.AuthToken, "bearer", authenticatedUser.Roles);
+                Authenticated(this, previousAuthModel);
+                return true;
+            }
 
-           if(response.IsSuccess == false)
-           {
-               return response.FormattedErrorMessages ?? "An error occured trying to log user in";
-           }
+            // using polly
+            //try to authenticate no more than 3 times
+            //onFailure notify user via pop up
+            var response = await SharedSettings.Execute<IAuthenticationEndpoint, AuthModel>(api => api.LoginAsync(loginCred, default(System.Threading.CancellationToken)));
 
-           var authModel = response.Results;
-           authenticatedUser = new AuthenticatedUser
-           {
-               AuthToken = authModel.Token,
-               LastLogin = DateTime.Now.ToString(),
-               PwdHsh = pwdHshStr,
-               UserName = credentials.Email
-           };
-           await BlobCache.UserAccount.InsertObject<AuthenticatedUser>(CacheKeys.User_Auth, authenticatedUser);
-           RegisterAuthTokenForRequests(authModel);
+            if(response.IsSuccess == false)
+            {
+                return response.ErrorMessage ?? "An error occured trying to log user in";
+            }
 
-           return true;
+            var authModel = response.Results;
+            authenticatedUser = new AuthenticatedUser(authModel.Token, pwdHshStr, credentials.Email);
+            await BlobCache.UserAccount.InsertObject<IAuthenticatedUser>(CacheKeys.User_Auth, authenticatedUser);
+            RegisterAuthTokenForRequests(authModel);
+            Authenticated(this, authModel);
+            return true;
        }
 
        private void RegisterAuthTokenForRequests(AuthModel authModel)
@@ -132,7 +135,7 @@ namespace Analyzer.Services.Impl
 
            //todo: add it also for graphQl bearer
        }
-
+        /*
        public async Task<Operations.OperationResult<bool>> Logout()
        {
            // clearCache

@@ -3,6 +3,7 @@
     x:Class="Analyzer.Pages.Menu"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:i18n="clr-namespace:Analyzer.Extensions"
     xmlns:local="clr-namespace:Analyzer.Core"
     xmlns:pages="clr-namespace:Analyzer.Pages"
     Title="Flow Manager"
@@ -10,17 +11,18 @@
     IconImageSource="hamburger.png">
     <ContentPage.Content>
         <StackLayout>
+            <Label Text="{i18n:Translate Text=SomeTitle}" />
             <ListView x:Name="listView" x:FieldModifier="public">
-                <ListView.ItemsSource>
+                <!-- <ListView.ItemsSource>
                     <x:Array Type="{x:Type local:PageItem}">
                         <local:PageItem
                             Title="Dashboard"
                             IconSource="contacts.png"
                             TargetType="{x:Type pages:Dashboard}" />
-                        <!--<local:FlyoutPageItem Title="TodoList" IconSource="todo.png" TargetType="{x:Type local:TodoListPage}" />
-                        <local:FlyoutPageItem Title="Reminders" IconSource="reminders.png" TargetType="{x:Type local:ReminderPage}" />-->
+                        <local:FlyoutPageItem Title="TodoList" IconSource="todo.png" TargetType="{x:Type local:TodoListPage}" />
+                        <local:FlyoutPageItem Title="Reminders" IconSource="reminders.png" TargetType="{x:Type local:ReminderPage}" />
                     </x:Array>
-                </ListView.ItemsSource>
+                </ListView.ItemsSource>-->
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -29,8 +31,15 @@
                                     <ColumnDefinition Width="30" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Source="{Binding IconSource}" />
-                                <Label Grid.Column="1" Text="{Binding Title}" />
+                                <Image>
+                                    <Image.Source>
+                                        <FontImageSource
+                                            FontFamily="FontAwesome5Regular"
+                                            Glyph="{Binding IconSource}"
+                                            Color="Black" />
+                                    </Image.Source>
+                                </Image>
+                                <Label Grid.Column="1" Text="{i18n:Translate Text=Title, Path=Title}" />
                             </Grid>
                         </ViewCell>
                     </DataTemplate>

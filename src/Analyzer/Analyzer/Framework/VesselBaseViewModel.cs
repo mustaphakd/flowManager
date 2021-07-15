@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
-namespace Mobile.Framework
+namespace Analyzer.Framework
 {
     public abstract class VesselBaseViewModel<AVM,  T> : BaseStateAwareViewModel<Analyzer.Core.ViewStates>
         where T : class, IModelDefinition
         where AVM: ActionableBaseViewModel<AVM, T>
     {
-        public const string LoggingPrefix = "Mobile.Feature.Mobile.Framework.VesselBaseViewModel<AVM,  T>::";
+        public const string LoggingPrefix = "Analyzer.Framework.VesselBaseViewModel<AVM,  T>::";
         private Object syncObj = new Object();
 
         public VesselBaseViewModel()

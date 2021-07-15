@@ -1,4 +1,4 @@
-﻿namespace Analyzer.Operations
+﻿namespace Worosoft.Xamarin.CommonTypes.Operations
 {
     public interface IOperationsService
     {

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.CommunityToolkit.Helpers;
@@ -58,7 +59,10 @@ namespace Analyzer.Services
         public  async Task Initialize()
         {
             this.RegisterServicesAndProviders();
-            var firstUsageTask = FileSystemManager.ReadLocalSettingAsync<bool>(ApplicationManager.ISFIRSTUSAGE);
+
+            await FileSystemManager.CheckLocalSettingExists(ApplicationManager.ISFIRSTUSAGE);
+             var firstUsageTask = FileSystemManager.ReadLocalSettingAsync<bool>(ApplicationManager.ISFIRSTUSAGE, false, true);
+
 
             _connected = Xamarin.Essentials.Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.Internet ||
                 Xamarin.Essentials.Connectivity.NetworkAccess == Xamarin.Essentials.NetworkAccess.ConstrainedInternet;
@@ -94,11 +98,80 @@ namespace Analyzer.Services
                 _authModel = isAuthUsageWindowValid ? authModel : null;
                 MonitorAuthentionHeartbeat();
             }
+
+
+            var authService = DependencyService.Get<IAuthenticationService>();
+
+            EventHandler<AuthModel> handler = null;
+            handler = delegate (object source, AuthModel authModel)
+            {
+                //authService.Authenticated -= handler;
+                handler = null;
+                OnAuthenticationStateChanged(authModel);
+                ShowMainPage();
+            };
+
+
+            authService.Authenticated += handler;
+
+            ShowView();
+        }
+
+        private void ShowView()
+        {
+            if(LoginViewType == null)
+            {
+                ShowMainPage();
+                return;
+            }
+
+            var loginInstance = Activator.CreateInstance(LoginViewType) as UI.ILoginView;
+
+            loginInstance.SetLoginCompleted(successfullLogin, failedLogin);
+
+            Application.MainPage = loginInstance as Xamarin.Forms.Page;
+        }
+
+        private async Task failedLogin()
+        {
+            var dialogService = DependencyService.Get<Services.Impl.DialogService>();
+            await dialogService.AlertInfo("LoginFailure", "AppMustShutdown");
+
+        }
+
+        private async Task successfullLogin(bool successfullLogginIn)
+        {
+            if(!successfullLogginIn)
+            {
+                await failedLogin();
+            }
+            /**
+
+
+            var authService = DependencyService.Get<IAuthenticationService>();
+
+            EventHandler<AuthModel> handler = null;
+            handler = delegate (object source, AuthModel authModel)
+            {
+                authService.Authenticated -= handler;
+                handler = null;
+                OnAuthenticationStateChanged(authModel);
+                ShowMainPage();
+            };
+
+
+            authService.Authenticated += handler;
+             */
+        }
+
+        private void ShowMainPage()
+        {
+            Application.MainPage = Activator.CreateInstance(DefaultViewType) as Xamarin.Forms.Page;
         }
 
         private static void ConfigureFirstTimeUsage()
         {
-            var resultFirstUsage = Convert.ToString(false);
+            var resultFirstUsage = FileSystemManager.SerializeObject(false);
             var configuredUsage = FileSystemManager.WriteLocalSetting(ApplicationManager.ISFIRSTUSAGE, resultFirstUsage).ConfigureAwait(true);
             var awaiterUsage = configuredUsage.GetAwaiter();
             awaiterUsage.GetResult();
@@ -114,8 +187,11 @@ namespace Analyzer.Services
                 language = SettingsModel.Languages.First(lang => lang.ShortName.StartsWith("en", StringComparison.InvariantCultureIgnoreCase));
             }
 
-            settingsModel.Language = language;
-            settings.SetSettings(settingsModel);
+            if (settingsModel.Language != language)
+            {
+                settingsModel.Language = language;
+                settings.SetSettings(settingsModel).ConfigureAwait(true).GetAwaiter().GetResult();
+            }
         }
 
         private void Connectivity_ConnectivityChanged(object sender, Xamarin.Essentials.ConnectivityChangedEventArgs e)
@@ -138,8 +214,16 @@ namespace Analyzer.Services
             DependencyService.Register<ILoggerFactory, Infrastructure.LoggerFactory>();
             DependencyService.Register<ISettingsService, SettingsService>();
             DependencyService.Register<IDataStoreService, DataStoreService>();
+            DependencyService.Register<IHttpClientFactory, Worosoft.Xamarin.HttpClientExtensions.AllInclusiveFactory>();
             DependencyService.Register<Services.Impl.DialogService>();
-            DependencyService.Register<IAuthenticationService, AuthenticationService>();
+
+            DependencyService.Register<IRoleMenuItemsProvider, RoleMenuItemsProvider>();
+            DependencyService.RegisterSingleton<IAuthenticationService>(new AuthenticationService());
+        }
+
+        public void RegisterMenuItemsProvider<T>() where T : class, IMenuItemsProvider, new()
+        {
+            DependencyService.Register<IMenuItemsProvider, T>();
         }
 
         public event EventHandler LoadingStateChanged
@@ -185,6 +269,10 @@ namespace Analyzer.Services
         /// <param name="model"></param>
         void OnAuthenticationStateChanged(AuthModel model)
         {
+            var roles = model?.Roles ?? new string[] { };
+            var rolesProvider = new RolesProvider(roles);
+            DependencyService.RegisterSingleton<IRolesProvider>(rolesProvider);
+
             _authModel = model;
             MonitorAuthentionHeartbeat();
             _authenticationStateChangedEventManager.RaiseEvent(this, IsAuthenticated, nameof(AuthenticationStateChanged));
@@ -219,6 +307,18 @@ namespace Analyzer.Services
             // dialog : updates available, would you like to update ??
             var updater = new Updater(this.AppUpdateUrl, this.UpdateChecks);
             await updater.PerformUpdate();
+        }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="defaultView"></param>
+        /// <param name="loginView">set only when app neeed authentication security</param>
+        public void SetViews(Type defaultView, Type loginView)
+        {
+            DefaultViewType = defaultView;
+            LoginViewType = loginView;
         }
 
         public bool IsLoading => _loading;
@@ -274,7 +374,8 @@ namespace Analyzer.Services
         }
 
         public int UpdateChecks { get; private set; }
-
+        public Type LoginViewType { get; private set; }
+        public Type DefaultViewType { get; private set; }
 
         private void MonitorAuthentionHeartbeat()
         {

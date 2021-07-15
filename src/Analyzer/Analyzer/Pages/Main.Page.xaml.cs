@@ -8,6 +8,7 @@ using Analyzer.Core;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
+using Analyzer.Services;
 
 namespace Analyzer.Pages
 {
@@ -17,6 +18,8 @@ namespace Analyzer.Pages
         public Main()
         {
             InitializeComponent();
+            LoadMenuItems();
+            LoadDefaultView();
 
             flyoutPage.listView.ItemSelected += OnItemSelected;
 
@@ -26,6 +29,40 @@ namespace Analyzer.Pages
             // Get Metrics
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
             HandleDisplayInfo(mainDisplayInfo);
+        }
+
+        private void LoadDefaultView()
+        {
+            //todo: when loading a previous session,
+            // get the previous view
+            // get previous state
+            //set view state
+
+
+            var roleMenuItemsProvider = DependencyService.Get<IRoleMenuItemsProvider>();
+            var menuItems = roleMenuItemsProvider.GetMenuItemForRoles();
+
+            var defaultView = menuItems.First().ViewType;
+            SetView(defaultView);
+        }
+
+        private void LoadMenuItems()
+        {
+            var roleMenuItemsProvider = DependencyService.Get<IRoleMenuItemsProvider>();
+            var menuItems = roleMenuItemsProvider.GetMenuItemForRoles();
+
+            foreach (var menuItem in menuItems)
+            {
+                var pageItem = new PageItem
+                {
+                    Title = menuItem.NameTranslationKey,
+                    Description = menuItem.DescriptionTranslationKey,
+                    IconSource = menuItem.Image,
+                    TargetType = menuItem.ViewType
+                };
+
+                flyoutPage.AddPageItem(pageItem);
+            }
         }
 
         private void OnMainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
@@ -59,9 +96,10 @@ namespace Analyzer.Pages
         void OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             var item = e.SelectedItem as PageItem;
+
             if (item != null)
             {
-                Detail = new NavigationPage((Page)Activator.CreateInstance(item.TargetType));
+                SetView(item.TargetType);
                 flyoutPage.listView.SelectedItem = null;
 
                 var behavior = this.FlyoutLayoutBehavior;
@@ -76,6 +114,11 @@ namespace Analyzer.Pages
                     (behavior == FlyoutLayoutBehavior.SplitOnPortrait && orientation == DisplayOrientation.Portrait)) return;
                 IsPresented = false;
             }
+        }
+
+        void SetView(Type viewType)
+        {
+            Detail = new NavigationPage((Page)Activator.CreateInstance(viewType));
         }
     }
 }

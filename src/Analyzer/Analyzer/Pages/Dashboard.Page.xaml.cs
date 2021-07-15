@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace Analyzer.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Dashboard : ContentPage
+    public partial class DashboardPage : ContentPage
     {
-        public Dashboard()
+        public DashboardPage()
         {
             InitializeComponent();
         }

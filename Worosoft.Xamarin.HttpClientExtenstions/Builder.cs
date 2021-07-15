@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Worosoft.Xamarin.HttpClientExtensions.Extensions;
 using Worosoft.Xamarin.HttpClientExtensions.Handlers;
 using Xamarin.Forms;
@@ -35,14 +36,30 @@ namespace Worosoft.Xamarin.HttpClientExtensions
             var timeout = ApiDefinitionExtension.GetTimeout<T1>();
             var handlerType = ApiDefinitionExtension.GetHttpMessageHandler<T1>();
 
+            //var endpointPath = ApiDefinitionExtension.GetEndpointPath<T1>().TrimStart('/');
+
+            //var schemeRegex = new Regex("http(s)?://");
+            //var endpointHasScheme = schemeRegex.IsMatch(endpointPath);
+
+            //if(endpointHasScheme)
+            //{
+            //    baseUrl = endpointPath;
+            //}
+            //else
+            //{
+            //    baseUrl += baseUrl.EndsWith("/") ? endpointPath : "/" + endpointPath;
+            //}
+
             var factory = DependencyService.Get<IHttpClientFactory>();
             var client = factory.CreateClient(baseUrl);
-            if(Uri.TryCreate(baseUrl, UriKind.RelativeOrAbsolute, out Uri address))
+
+            // don't change baseAddress if already set
+            if((client.BaseAddress == null || string.IsNullOrEmpty(client.BaseAddress.ToString()) ) && Uri.TryCreate(baseUrl, UriKind.RelativeOrAbsolute, out Uri address))
             {
                 client.BaseAddress = address;
+                client.Timeout = timeout;
             }
 
-            client.Timeout = timeout;
 
             if(handlerType != null)
             {

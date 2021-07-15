@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<frmwrk:BaseContentPage
+    x:Class="Analyzer.Views.LoginView"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:bvr="clr-namespace:Analyzer.Behaviors"
+    xmlns:frmwrk="clr-namespace:Analyzer.Framework"
+    xmlns:toolkit="toolkit"
+    xmlns:vm="clr-namespace:Analyzer.ViewModels"
+    x:TypeArguments="vm:LoginViewModel">
+    <frmwrk:BaseContentPage.Content>
+        <Grid>
+            <ScrollView BackgroundColor="Orange" Orientation="Vertical">
+                <FlexLayout BackgroundColor="Purple" Direction="Column">
+                    <FlexLayout
+                        bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                        BackgroundColor="LightSeaGreen"
+                        Direction="Row"
+                        WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                        Wrap="Wrap">
+                        <Label
+                            Padding="2"
+                            BackgroundColor="Maroon"
+                            FlexLayout.Grow="1"
+                            Text=" daf asa aseol Enter Name."
+                            VerticalOptions="FillAndExpand"
+                            VerticalTextAlignment="Center" />
+                        <Entry
+                            FlexLayout.Grow="3"
+                            Placeholder="Username"
+                            PlaceholderColor="Olive"
+                            Text="{Binding UserName}" />
+                    </FlexLayout>
+                    <FlexLayout
+                        bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                        BackgroundColor="LightSeaGreen"
+                        Direction="Row"
+                        WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                        Wrap="Wrap">
+                        <Label
+                            Padding="2"
+                            BackgroundColor="Maroon"
+                            FlexLayout.Grow="1"
+                            Text=" daf asa aseol Enter Name."
+                            VerticalOptions="FillAndExpand"
+                            VerticalTextAlignment="Center" />
+                        <Entry
+                            FlexLayout.Grow="2"
+                            Placeholder="Password"
+                            PlaceholderColor="Olive"
+                            Text="{Binding Password}" />
+                    </FlexLayout>
+                    <FlexLayout
+                        bvr:AdaptiveInnerFlexLayoutBehavior.AdjustDimensions="True"
+                        BackgroundColor="LightSeaGreen"
+                        Direction="Row"
+                        WidthRequest="{Binding Source={RelativeSource AncestorType={x:Type FlexLayout}}, Path=Width}"
+                        Wrap="Wrap">
+                        <Button
+                            Padding="2"
+                            BackgroundColor="Maroon"
+                            Command="{Binding CancelCommand}"
+                            FlexLayout.Grow="1"
+                            Text="Cancel"
+                            VerticalOptions="FillAndExpand" />
+                        <Button
+                            Padding="2"
+                            BackgroundColor="Maroon"
+                            Command="{Binding LoginCommand}"
+                            FlexLayout.Grow="1"
+                            Text="Login"
+                            VerticalOptions="FillAndExpand" />
+                    </FlexLayout>
+                </FlexLayout>
+            </ScrollView>
+            <Grid BackgroundColor="#afffffff" IsVisible="{x:Binding IsBusy}">
+                <ActivityIndicator
+                    AbsoluteLayout.LayoutBounds="0.5,0.5,-1,-1"
+                    AbsoluteLayout.LayoutFlags="PositionProportional"
+                    HeightRequest="80"
+                    HorizontalOptions="CenterAndExpand"
+                    IsRunning="{x:Binding IsBusy}"
+                    VerticalOptions="CenterAndExpand"
+                    WidthRequest="80"
+                    Color="Blue" />
+            </Grid>
+        </Grid>
+    </frmwrk:BaseContentPage.Content>
+</frmwrk:BaseContentPage>
